@@ -15,9 +15,11 @@ HEIGHT = Pt(400)
 
 # setting log information
 logging.basicConfig(filename='events.log',
-                    filemode='w',
+                    filemode='a+',
                     format='%(asctime)s: %(levelname)s - %(message)s',
-                    datefmt='%yyyy-%mm-%dd %H:%M')
+                    datefmt='%y-%m-%d %H:%M')
+logger = logging.getLogger("log")
+logger.setLevel(logging.INFO)
 
 
 class SlideManager:
@@ -33,7 +35,7 @@ class SlideManager:
         """Generate Title slide\n
         Contains a title and a sub-title
         """
-        logging.info("title_slide: Start generate")
+        logger.info("title_slide: Start generate")
         # set title layout slide
         layout = self.pres.slide_layouts[0]
 
@@ -46,18 +48,18 @@ class SlideManager:
             new_slide.placeholders[1].text = properties.content
 
         except Exception as e:
-            logging.error("title_slide: text or content error: ", e)
+            logger.error("title_slide: text or content error: ", e)
 
         else:
             # save slide to the presentation
             self.pres.save(self.output_filename)
-            logging.info("title_slide: Generate successfully")
+            logger.info("title_slide: Generate successfully")
 
     # add title and textbox slide
     def text_slide(self, properties: Slide):
         """Generate a slide with a long text.\n
         Contains a title and some text"""
-        logging.info("text_slide: Start generate")
+        logger.info("text_slide: Start generate")
 
         # set title only slide
         layout = self.pres.slide_layouts[5]
@@ -69,7 +71,7 @@ class SlideManager:
         try:
             new_slide.shapes.title.text = properties.title
         except Exception as e:
-            logging.error("text_slide: error in title: ", e)
+            logger.error("text_slide: error in title: ", e)
 
         # create a new textbox
         textbox = new_slide.shapes.add_textbox(LEFT, TOP, WIDTH, HEIGHT)
@@ -82,16 +84,16 @@ class SlideManager:
         try:
             paragraph.text = properties.content
         except Exception as e:
-            logging.error("text_slide: error in content: ", e)
+            logger.error("text_slide: error in content: ", e)
 
         # save slide to presentation
         self.pres.save(self.output_filename)
-        logging.info("text_slide: Generate successfully")
+        logger.info("text_slide: Generate successfully")
 
     def list_slide(self, properties: Slide):
         """Generate a slide with a list\n
         Contains a title and a bullet list"""
-        logging.info("list_slide: Start generate")
+        logger.info("list_slide: Start generate")
 
         # set title and content slide
         layout = self.pres.slide_layouts[1]
@@ -103,7 +105,7 @@ class SlideManager:
         try:
             new_slide.shapes.title.text = properties.title
         except Exception as e:
-            logging.error("list_slide: error in title: ", e)
+            logger.error("list_slide: error in title: ", e)
 
         # add a new placeholder
         place = new_slide.placeholders[1]
@@ -121,16 +123,16 @@ class SlideManager:
                 par.text = text['text']
 
         except Exception as e:
-            logging.error("list_slide: error in content: ", e)
+            logger.error("list_slide: error in content: ", e)
 
         # save slide to presentation
         self.pres.save(self.output_filename)
-        logging.info("list_slide: Generate successfully")
+        logger.info("list_slide: Generate successfully")
 
     def image_slide(self, properties: Slide):
         """Generate a slide with an image\n
             Contains a title and an image"""
-        logging.info("image_slide: Start generate")
+        logger.info("image_slide: Start generate")
 
         # set title only slide
         layout = self.pres.slide_layouts[5]
@@ -142,24 +144,24 @@ class SlideManager:
             # add title text to slide
             new_slide.shapes.title.text = properties.title
         except Exception as e:
-            logging.error("image_slide: error in title: ", e)
+            logger.error("image_slide: error in title: ", e)
 
         try:
             # add picture to slide
             new_slide.shapes.add_picture(properties.content, LEFT, TOP, WIDTH, HEIGHT)
         except FileNotFoundError:
-            logging.error("image_slide: Image not found")
+            logger.error("image_slide: Image not found")
         except Exception as e:
-            logging.error("image_slide: error in content: ", e)
+            logger.error("image_slide: error in content: ", e)
 
         # save slide to presentation
         self.pres.save(self.output_filename)
-        logging.info("image_slide: Generate successfully")
+        logger.info("image_slide: Generate successfully")
 
     def plot_slide(self, properties: Slide):
         """Generate a slide with a plot\n
         Create a line chart from coordinates and insert into the slide"""
-        logging.info("plot_slide: Generate successfully")
+        logger.info("plot_slide: Start generate")
 
         try:
             # read coordinates from file
@@ -168,9 +170,9 @@ class SlideManager:
                 points = list(reader)
 
         except FileNotFoundError:
-            logging.error("plot_slide: ",properties.content," not found")
+            logger.error("plot_slide: ",properties.content," not found")
         except Exception as e:
-            logging.error("plot_slide: error in content: ", e)
+            logger.error("plot_slide: error in content: ", e)
         else:
             # modify 4 2x1 array to 2 4x1 array
             # First array contain the x coordinates, second contain the y coordinates
@@ -186,7 +188,7 @@ class SlideManager:
                 # import the chart to png
                 plot_io.write_image(chart, 'chart.png')
             except Exception as e:
-                logging.error("plot_slide: error in create chart: ", e)
+                logger.error("plot_slide: error in create chart: ", e)
             else:
                 # define only title slide
                 layout = self.pres.slide_layouts[5]
@@ -197,14 +199,14 @@ class SlideManager:
                     # add title
                     new_slide.shapes.title.text = properties.title
                 except Exception as e:
-                    logging.error("plot_slide: error in title: ", e)
+                    logger.error("plot_slide: error in title: ", e)
 
                 try:
                     # add chart picture
                     new_slide.shapes.add_picture('chart.png', LEFT, TOP, WIDTH, HEIGHT)
                 except Exception as e:
-                    logging.error("plot_slide: error when add the chart image: ", e)
+                    logger.error("plot_slide: error when add the chart image: ", e)
 
                 # save slide to presentation
                 self.pres.save(self.output_filename)
-                logging.info("plot_slide: Generate successfully")
+                logger.info("plot_slide: Generate successfully")

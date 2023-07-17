@@ -8,6 +8,8 @@ logging.basicConfig(filename='events.log',
                     filemode='w',
                     format='%(asctime)s: %(levelname)s - %(message)s',
                     datefmt='%yyyy-%mm-%dd %H:%M')
+logger = logging.getLogger("log")
+logger.setLevel(logging.INFO)
 
 
 def import_file(filename):
@@ -26,11 +28,11 @@ def import_file(filename):
     # filename or path not exist
     except FileNotFoundError:
         print("File not found. Please check that the filename and the path is correct!")
-        logging.error("import_file: File not found!")
+        logger.error("import_file: File not found!")
 
     # catch unexpected error
     except Exception as e:
-        logging.error("import_file: load data error: ", e)
+        logger.error("import_file: load data error: ", e)
 
     else:
         try:
@@ -56,10 +58,10 @@ def import_file(filename):
 
         # catch unexpected error
         except Exception as e:
-            logging.error("import_file: create slide class error: ", e)
+            logger.error("import_file: create slide class error: ", e)
 
         else:
-            logging.info("import_file: Import successfully")
+            logger.info("import_file: Import successfully")
             return slide_list
 
 
@@ -70,7 +72,7 @@ def presentation(input_file, outputfile):
         output_file:
             .ppt or .pptx file what is the presentation name"""
 
-    logging.info("presentation: Start generate")
+    logger.info("presentation: Start generate")
 
     # create a SlideManager object and add the .ppt file name
     slide_creator = SlideManager(outputfile);
@@ -89,11 +91,11 @@ def presentation(input_file, outputfile):
 
         # don't add the slide type
         except ValueError:
-            logging.error("presentation: the file not contained the slide type.")
+            logger.error("presentation: the file not contained the slide type.")
 
         # handling unexpected error
         except Exception as e:
-            logging.error("presentation: slide type error: ", e)
+            logger.error("presentation: slide type error: ", e)
 
         else:
             try:
@@ -113,15 +115,15 @@ def presentation(input_file, outputfile):
 
             # type is not correct
             except TypeError:
-                logging.error("Presentation: this type of slide is not exist")
+                logger.error("Presentation: this type of slide is not exist")
                 print(stype, ": this type of slide is not exist")
 
             # handling unexpected error
             except Exception as e:
-                logging.error("presentation: slide create error: ", e)
+                logger.error("presentation: slide create error: ", e)
 
             else:
-                logging.info("presentation: Generate successfully")
+                logger.info("presentation: Generate successfully")
 
 
 if __name__ == "__main__":
@@ -136,12 +138,12 @@ if __name__ == "__main__":
     # missing argument
     except IndexError:
         print("Please add the .json file in arguments. Correct run is 'python create_presentation.py sample.json'")
-        logging.error("main: missing filename argument")
+        logger.error("main: missing filename argument")
 
     # wrong extension
     except NameError:
         print("The file extension is wrong! Example: 'sample.json'")
-        logging.error("main: The file is not .json")
+        logger.error("main: The file is not .json")
 
     # create presentation
     else:
