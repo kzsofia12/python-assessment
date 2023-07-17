@@ -1,0 +1,5 @@
+1.A megadott fájlok közül hiányzott a kép amit a slide-ba kellett rakni
+	- Megnyitottam az "example_output.pptx" fájl-t és lementettem a képet a .json fájlban található névvel.
+
+2.A .json fájlban sample.dat névvel szerepelt a grafikonhoz tartozó adat. A megadott fájlok között csak sample.csv fájl volt.
+	- sample.json fájlban módosítottam a nevet sample.dat-ról sample.csv-res
